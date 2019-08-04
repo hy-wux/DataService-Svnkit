@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<span th:fragment="content">
+<th:block th:text="${Username}"/>：您好！<br/>
+已成功为您授予SVN仓库的访问权限。<br/>
+SVN仓库用途：<span class="mid-red-text" style=" font-weight:700;"><th:block th:text="${SVNRepositoryDesc}"/></span><br/>
+SVN仓库路径：<span class="mid-red-text" style=" font-weight:700;"><th:block th:text="${SVNRepositoryRoot}"/>/<th:block
+        th:text="${SVNRepositoryName}"/></span><br/>
+<br/>
+如有疑问可与<span><a href="#" th:href="${'mailto:' + AdminEmail + '?subject=SVN相关问题'}">管理员</a></span>联系。<br/>
+<br/>
+<span class="mid-red-text" style=" font-weight:700;">温馨提醒：你可以使用自己的SVN账号、密码进行访问；请不要提交与项目无关的东西到仓库。</span>
+<br/>
+<br/>
+<span class="mid-CHSText">非常感谢！</span>
+<br/>
+<br/>
+<span class="mid-ENUText">
+SVN管理员 - <th:block th:text="${AdminName}"/><br/>
+<th:block th:text="${SENDDatetime}"/><br/>
+</span>
+<br/>
+</span>

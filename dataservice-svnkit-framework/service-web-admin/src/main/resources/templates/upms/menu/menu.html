@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="zh" class="no-js">
+    <head th:include="common_include :: commonHead('菜单管理')"/>
+    <body class="gray-bg">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>菜单管理</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row row-lg">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <form id="query-form">
+                                            <div class="col-sm-5">
+                                                <div class="input-group m-b">
+                                                    <span class="input-group-addon">菜单名称</span>
+                                                    <input type="text" name="menuName" id="menuName"
+                                                           class="form-control" placeholder="菜单名称">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <a class="btn btn-primary btn-rounded btn-sm"
+                                                   onclick="$.treeTable.search('query-form')"><i
+                                                        class="fa fa-search"></i>&nbsp;搜索
+                                                </a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="btn-group hidden-xs" id="toolbar" role="group">
+                                        <a class="btn btn-outline btn-success btn-rounded"
+                                           shiro:hasPermission="upms:menu:add" onclick="$.operate.add(0)">
+                                            <i class="fa fa-plus"></i>
+                                            新增
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-12 select-info table-striped">
+                                        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <div th:include="common_include :: commonFoot"/>
+    <script th:inline="javascript">
+        $(function () {
+            var addFlag = [[${@permission.displayWithPermission('upms:menu:add')}]];
+            var editFlag = [[${@permission.displayWithPermission('upms:menu:edit')}]];
+            var deleteFlag = [[${@permission.displayWithPermission('upms:menu:delete')}]];
+            var dicts = [[${@dictCode.selectDictCodeByType('sys_normal_disable')}]];
+            var prefix = ctx + "upms/menu";
+
+            var options = {
+                id: "rowKey",
+                parentId: "pid",
+                expandAll: false,
+                url: prefix + "/list",
+                createUrl: prefix + "/add/{id}",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/delete",
+                orderField: "sortNum",
+                orderType: "asc",
+                modalName: "菜单",
+                columns: [{
+                    title: '菜单名称',
+                    field: 'menuName',
+                    formatter: function (value, row, index) {
+                        if (row.icon == null || row == "") {
+                            return row.menuName;
+                        } else {
+                            return '<i class="' + row.icon + '"></i> <span class="nav-label">' + row.menuName + '</span>';
+                        }
+                    }
+                }, {
+                    field: 'levels',
+                    title: '层级',
+                    align: "center"
+                }, {
+                    field: 'sortNumber',
+                    title: '排序',
+                    align: "center"
+                }, {
+                    field: 'url',
+                    title: '请求地址',
+                    align: "center"
+                }, {
+                    field: 'permission',
+                    title: '权限标识',
+                    align: "center"
+                }, {
+                    title: '类型',
+                    field: 'menuType',
+                    align: "center",
+                    formatter: function (value, item, index) {
+                        if (item.menuType == 'M') {
+                            return '<span class="label label-success">目录</span>';
+                        }
+                        else if (item.menuType == 'F') {
+                            return '<span class="label label-primary">菜单</span>';
+                        }
+                        else if (item.menuType == 'B') {
+                            return '<span class="label label-warning">按钮</span>';
+                        }
+                    }
+                }, {
+                    field: 'menuStatus',
+                    title: '菜单状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return $.table.selectDictName(dicts, value);
+                    }
+                }, {
+                    title: '操作',
+                    width: '20%',
+                    align: "center",
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        var hidden = "";
+                        if (row.menuType == 'B') {
+                            hidden = "hidden";
+                        }
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + ' " onclick="$.operate.edit(\'' + row.rowKey + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-info btn-xs ' + addFlag + ' ' + hidden + '" onclick="$.operate.add(\'' + row.rowKey + '\')"><i class="fa fa-plus"></i>新增</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + deleteFlag + '" onclick="$.operate.remove(\'' + row.rowKey + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.treeTable.init(options);
+        });
+    </script>
+</html>

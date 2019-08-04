@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        .l-grid {
+            position: relative;
+            text-align: left;
+        }
+
+        .l-grid-empty .l-grid-body-inner {
+            width: 100%;
+        }
+
+        .l-grid-hashorizontal .l-grid-body1 .l-grid-body-inner {
+            margin-bottom: 19px;
+        }
+
+        .l-grid td div {
+            font-size: 12px;
+        }
+
+        .l-grid table {
+            border-spacing: 0 0;
+            font-size: 12px;
+            color: #93836d;
+            font-family: 微软雅黑;
+        }
+
+        /* 表头*/
+        .l-grid-header {
+            border-bottom: 1px solid #fff;
+            height: 22px;
+            line-height: 22px;
+            background: #97ce68;
+            overflow: hidden;
+            padding: 5px 0 5px 0;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1075px;
+            color: White;
+            font-size: 14px;
+            font-family: 微软雅黑;
+            background: none repeat scroll 0% 0% #97CE68;
+        }
+
+        .l-grid-editor .l-checkbox-wrapper {
+            margin-top: 2px;
+        }
+
+        .l-grid-popup table {
+            display: table;
+            border-collapse: separate;
+            border-color: gray;
+            margin: 2px;
+        }
+
+        .l-grid-popup table tbody {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+
+        .l-grid-popup table td {
+            padding: 2px 3px;
+            cursor: default;
+        }
+
+        .l-grid-popup td.l-column-left {
+            border-right: 1px solid #ccc;
+        }
+
+        .l-grid-popup td.l-column-right {
+            border-left: 1px solid #fff;
+            padding-right: 10px;
+        }
+
+        .l-grid-popup tr:hover .l-column-right, .l-grid-popup tr.l-popup-row-over .l-column-right {
+            border-right: 1px solid #d2e3ec;
+            border-top: 1px solid #d2e3ec;
+            border-bottom: 1px solid #d2e3ec;
+        }
+
+        .l-grid-popup tr:hover .l-column-left, .l-grid-popup tr.l-popup-row-over .l-column-left {
+            border-left: 1px solid #d2e3ec;
+            border-top: 1px solid #d2e3ec;
+            border-bottom: 1px solid #d2e3ec;
+        }
+
+        /*|间隔*/
+        .l-grid-hd-cell-mul {
+            border-bottom: 1px solid white;
+        }
+
+        .l-grid-hd-cell-detail {
+            padding: 0;
+            margin: 0;
+        }
+
+        .l-grid-hd-cell-inner {
+            text-align: center;
+        }
+
+        .l-grid-dragging-line {
+            background: #EC4262;
+            width: 1px;
+            position: absolute;
+            display: none;
+            z-index: 9999;
+            padding: 0;
+            margin: 0;
+        }
+
+        .l-grid-hd-cell-btn {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            overflow: hidden;
+            border-left: 1px solid #C1D6F0;
+            cursor: pointer;
+        }
+
+        .l-grid-hd-cell-drophandle {
+            width: 5px;
+            height: 22px;
+            cursor: col-resize;
+            float: right;
+            position: absolute;
+            top: 0px;
+            right: -3px;
+        }
+
+        .l-grid-hd-cell-text {
+            text-align: center;
+            cursor: pointer;
+            overflow: hidden;
+            color: white;
+            font-family: 微软雅黑;
+            font-size: 14px;
+        }
+
+        .l-grid-hd-cell {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            border-right: 1px solid white;
+            text-align: center;
+            background: #97CE68;
+            padding: 5px 0 5px 0;
+            color: White;
+            font-size: 14px;
+            font-family: 微软雅黑;
+        }
+
+        .l-grid-totalsummary {
+            border-bottom: 1px solid #A3C0E8;
+            background: #EEF3FF;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        .l-grid-totalsummary-nobottom {
+            border-bottom: none;
+        }
+
+        .l-grid-totalsummary td {
+            border-right: 1px solid #EEF3FF;
+            text-align: center;
+            line-height: 23px;
+        }
+
+        .l-grid-totalsummary .l-grid-totalsummary-cell-last {
+            border-right: 1px solid #A3C0E8;
+        }
+
+        .l-grid-totalsummary .l-grid-totalsummary-cell-inner {
+            margin-left: 3px;
+            margin-right: 3px;
+            min-height: 23px;
+            _height: 23px;
+        }
+
+        .l-grid-totalsummary .l-grid-totalsummary-cell-inner div {
+            height: 22px;
+            line-height: 22px;
+        }
+
+        .l-grid-detailpanel {
+            border-right: 1px solid #A3C0E8;
+            border-bottom: 1px solid #A3C0E8;
+        }
+
+        .l-grid-detailpanel-inner {
+            overflow: auto;
+            margin-bottom: 2px;
+        }
+
+        .l-grid-row-alt .l-grid-row-cell {
+            background-color: White;
+        }
+
+        .l-grid-row-cell .l-grid-ChangeColor {
+            background-color: Red;
+            color: White;
+        }
+
+        .l-grid-row-over .l-grid-row-cell, .l-grid-row-over {
+            background: #6BCBCA;
+            color: White;
+        }
+
+        .l-selected .l-grid-row-cell, .l-selected {
+            background: #6BCBCA;
+            color: White;
+        }
+
+        .l-grid-row-cell {
+            height: 20px;
+            overflow: hidden;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .l-grid-row-last .l-grid-row-cell {
+            border-bottom: none;
+        }
+
+        .l-grid-row-cell-last {
+        }
+
+        .l-grid-row-cell-detail .l-grid-row-cell-inner {
+            margin-left: 0px;
+            margin-right: 0px;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .l-grid-row-cell-checkbox .l-grid-row-cell-inner {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        .l-checked .l-grid-row-cell-checkbox span, .l-checked .l-grid-hd-cell-checkbox .l-selected .l-grid-row-cell-checkbox span, .l-selected .l-grid-hd-cell-checkbox .l-grid-hd-cell-inner {
+            overflow: hidden;
+        }
+
+        .l-grid-hd-cell-checkbox {
+            padding: 0;
+            margin: 0;
+        }
+
+        .l-grid-row-cell-inner {
+            text-align: left;
+            line-height: 31px;
+            min-height: 22px;
+            _height: 22px;
+            overflow: hidden;
+            font-family: 微软雅黑;
+            font-size: 12px;
+            color: #9A8B77;
+        }
+
+        .l-grid-row-cell-inner-fixedheight {
+            height: 22px;
+        }
+
+        .l-grid-row-cell-inner-fixedheight {
+            height: 22px;
+        }
+
+        .mid-blue-text {
+            font-family: Tahoma;
+            font-size: 14px;
+            color: #6BCBCA;
+            height: 31px;
+        }
+
+        .mid-brown-text {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            color: #776957;
+            height: 31px;
+        }
+
+        .mid-common-text {
+            font-family: 微软雅黑;
+            font-size: 12px;
+            color: #9A8B77;
+        }
+
+        .mid-red-text {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            color: #FF6766;
+        }
+
+        .mid-green-text {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            color: #97CE68;
+        }
+
+        .mid-green-text-EN {
+            font-family: Tahoma;
+            font-size: 14px;
+            color: #97CE68;
+        }
+
+        a {
+            color: #FF6766;
+        }
+
+        a:visited {
+            color: gray;
+        }
+
+        * {
+            text-align: left;
+        }
+
+        a:hover {
+            color: #FF6766;
+        }
+
+        .footer {
+            margin-top: 0px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1120px;
+            bottom: 0;
+        }
+
+        .main {
+            padding-top: 5px;
+            width: 1116px;
+            margin: 0 auto;
+            border-bottom: none;
+            border-top: none;
+            margin-top: -3px;
+            margin-bottom: -6px;
+            text-align: center;
+        }
+
+        .mid-pic-left {
+            float: left;
+            height: 150px;
+            width: 100px;
+            padding-left: 35px;
+        }
+
+        .mid-pic-right {
+            height: 100px;
+        }
+
+        .mid-CHSText {
+            font-family: 微软雅黑;
+            font-size: 14px;
+            color: #9A8B77;
+            line-height: 150%;
+        }
+
+        .mid-ENUText {
+            font-family: Tahoma;
+            font-size: 14px;
+            color: #9A8B77;
+            line-height: 150%;
+        }
+
+        .top {
+            width: 1120px;
+            padding: 0px;
+            padding-top: 25px;
+            margin: 0px;
+            border-bottom: 0px solid #D9D9D9;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        body {
+            width: 99%;
+            height: 100%;
+            background-color: white;
+            font: 12px araiar, 微软雅黑;
+        }
+
+        div {
+            display: block;
+        }
+    </style>
+</head>
+<body style="margin: 0 auto; text-align: center;">
+<table style="width: 1120px; margin: 0 auto; padding-top: 30px; border-collapse: collapse;
+            background-color: #f7f7f7;">
+    <tr style="border: 0px; padding: 0px; margin: 0px; margin-right: auto; margin-left: auto" class="top">
+        <td>
+            <img src="cid:imageInEmailHead" style="display: block">
+        </td>
+    </tr>
+    <tr>
+        <td class="main" style="background-color: #f7f7f7;">
+            <table style="margin: 0 auto; width: 1120px; text-align: left; border-collapse: collapse;">
+                <tr style="border: 0px; padding: 0px; margin: 0px auto;">
+                    <td align="Left" style="padding-top: 35px; padding-left: 42px; width: 115px" valign="top">
+                        <img src="cid:imageInEmailImgBlue">
+                    </td>
+                    <td style="border: 0px; padding: 0px; margin: 0px; padding-left:10px; width: 95%">
+                        <span class="mid-CHSText" th:include="${contentTemplate} :: content"/>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr style="border: 0px; padding: 0px; margin: 0px; margin-right: auto; margin-left: auto" class="top">
+        <td>
+            <img src="cid:imageInEmailFooter" style="display: block">
+        </td>
+    </tr>
+</table>
+</body>
+</html>

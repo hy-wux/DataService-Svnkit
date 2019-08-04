@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('用户添加')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-user-add">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器：</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="serverKey" id="serverKey"/>
+                        <input type="text" name="serverName" id="serverName" class="form-control" placeholder="服务器" readonly="true" required="true" onclick="selectSvnkitServerList()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">用户名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="username" id="username" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">员工名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="staffName" id="staffName"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">员工工号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="staffNum" id="staffNum"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">员工邮箱：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="email" name="staffEmail" id="staffEmail"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">登录账号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="loginAccount" id="loginAccount"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-svnkit.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "service/svnkit/users"
+
+    $("#form-user-add").validate({
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/add", $('#form-user-add').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-user-add').valid()) {
+            $('#form-user-add').submit()
+        }
+    }
+</script>
+</body>
+</html>

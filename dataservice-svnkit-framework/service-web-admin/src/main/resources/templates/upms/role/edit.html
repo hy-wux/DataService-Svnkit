@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('角色修改')"/>
+<link href="/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css"
+      th:href="@{/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-role-edit" th:object="${role}">
+                <input id="rowKey" name="rowKey"  type="hidden" th:field="*{rowKey}" />
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">代码</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="roleCode" id="roleCode" th:field="*{roleCode}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="roleName" id="roleName" th:field="*{roleName}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">描述</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="roleComment" id="roleComment" th:field="*{roleComment}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">状态</label>
+                    <div class="col-sm-8" th:with="dicts=${@dictCode.selectDictCodeByType('sys_normal_disable')}">
+                        <div th:each="dict : ${dicts}" th:class="${dict['cssStyle']}">
+                            <input type="radio" th:id="${dict['codeValue']}" name="roleStatus" th:value="${dict['codeValue']}"
+                                   th:field="*{roleStatus}">
+                            <label th:for="${dict['codeValue']}" th:text="${dict['codeText']}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">备注</label>
+                    <div class="col-sm-8">
+                        <input id="roleRemark" name="roleRemark" class="form-control" type="text" th:field="*{roleRemark}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">模块名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="moduleName"  th:field="*{moduleName}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">菜单权限</label>
+                    <div class="col-sm-8">
+                        <input id="menuIds" name="menuIds" type="hidden"/>
+                        <div id="menuTrees" class="ztree"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "upms/role"
+
+    // 树结构初始化加载
+    var setting = {
+        check: {enable: true, nocheckInherit: true, chkboxType: {"Y": "ps", "N": "ps"}},
+        view: {selectedMulti: false, nameIsHTML: true},
+        data: {simpleData: {enable: true}, key: {title: "title"}},
+        callback: {
+            beforeClick: function (treeId, treeNode, clickFlag) {
+                var menuTrees = $.fn.zTree.getZTreeObj(treeId);
+                menuTrees.checkNode(treeNode, !treeNode.checked, true, true);
+                return false;
+            }
+        }
+    }, menuTrees, loadTree = function () {
+        $.get(ctx + "upms/role/roleMenuTreeData?rowKey=" + $("#rowKey").val(), function (data) {
+            menuTrees = $.fn.zTree.init($("#menuTrees"), setting, data); //.expandAll(true);
+        }, null, null, "正在加载，请稍后...");
+    };
+    loadTree();
+
+    $("#form-role-edit").validate({
+        rules: {
+            roleName: {
+                required: true,
+            },
+            roleCode: {
+                required: true,
+                remote: {
+                    url: prefix + "/checkRoleUnique",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        rowKey: function () {
+                            return $.trim($("#rowKey").val());
+                        },
+                        roleCode: function () {
+                            return $.trim($("#roleCode").val());
+                        }
+                    },
+                    dataFilter: function (data, type) {
+                        return data == "0";
+                    }
+                }
+            },
+        },
+        messages: {
+            "roleCode": {
+                remote: "该角色已经存在"
+            }
+        },
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/edit", $('#form-role-edit').serialize());
+        }
+    });
+
+    function selectCheckeds() {
+        var menuIds = "";
+        var treeNodes = menuTrees.getCheckedNodes(true);
+        for (var i = 0; i < treeNodes.length; i++) {
+            if (0 == i) {
+                menuIds = treeNodes[i].id;
+            } else {
+                menuIds += ("," + treeNodes[i].id);
+            }
+        }
+        $("#menuIds").val(menuIds);
+    }
+
+    function submitClick() {
+        if ($('#form-role-edit').valid()) {
+            selectCheckeds();
+            $('#form-role-edit').submit()
+        }
+    }
+</script>
+</body>
+</html>

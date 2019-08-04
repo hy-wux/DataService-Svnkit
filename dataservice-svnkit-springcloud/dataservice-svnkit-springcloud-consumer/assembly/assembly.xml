@@ -1,0 +1,81 @@
+<assembly>
+    <id>bin</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <dependencySets>
+        <!-- runtime scope jar -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+        </dependencySet>
+        <!-- system scope jar -->
+        <dependencySet>
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>system</scope>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <!-- 脚本 -->
+        <fileSet>
+            <directory>${project.basedir}/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <filtered>true</filtered>
+        </fileSet>
+        <!-- 配置 -->
+        <fileSet>
+            <directory>${project.basedir}/src/main/resources</directory>
+            <outputDirectory>config</outputDirectory>
+            <fileMode>0755</fileMode>
+            <directoryMode>0755</directoryMode>
+            <includes>
+                <include>*.conf</include>
+                <include>*.properties</include>
+                <include>*.yml</include>
+                <include>*.txt</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+        <!-- 依赖 -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>${project.build.finalName}.jar</include>
+            </includes>
+        </fileSet>
+        <!-- 文档 -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>docs</outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/docs</directory>
+            <outputDirectory>docs</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+        <!-- 截图 -->
+        <fileSet>
+            <directory>${project.basedir}/images</directory>
+            <outputDirectory>docs/images</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

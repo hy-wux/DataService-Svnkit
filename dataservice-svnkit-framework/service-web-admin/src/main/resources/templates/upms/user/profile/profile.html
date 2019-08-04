@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="common_include :: commonHead('个人信息')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>个人信息</h5>
+                    <div class="ibox-tools">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="javascript:edit()">修改信息</a></li>
+                            <li><a href="javascript:resetPassword()">修改密码</a></li>
+                            <li><a href="javascript:avatar()">修改头像</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+                <div class="contact-box">
+                    <div class="col-sm-4">
+                        <div class="text-center">
+                            <img alt="image" class="img-circle m-t-xs img-responsive"
+                                 th:src="(${user.avatar} == null or ${user.avatar} == '') ? '/avatar/profile.jpg' : '/profile/avatar/' + ${user.avatar}">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <h3><strong>[[${user.userAccount}]]</strong></h3>
+                        <p><i class="fa fa-user"></i> [[${dept.deptName}]] / [[${user.userName}]]
+                        <p><i class="fa fa-transgender"></i> [[${user.sex}]]</p>
+                        <p><i class="fa fa-birthday-cake"></i> [[${#dates.format(user.birthday, 'yyyy-MM-dd')}]]</p>
+                        <p><i class="fa fa-phone"></i> [[${user.phone}]]</p>
+                        <p><i class="fa fa-envelope-o"></i> [[${user.email}]]</p>
+                        <p><i class="fa fa-user-secret"></i> [[${roles}]]</p>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:inline="javascript">
+    var userId = [[${user.rowKey}]];
+    /*用户信息-修改*/
+    function edit() {
+        var url = ctx + "upms/user/profileEdit/" + userId;
+        $.modal.open("修改用户", url);
+    }
+    /*用户管理-重置密码*/
+    function resetPassword() {
+        var url = ctx + 'upms/user/profileResetPassword/' + userId;
+        $.modal.open("重置密码", url);
+    }
+    /*用户管理-头像*/
+    function avatar() {
+        var url = ctx + 'upms/user/profileAvatar/' + userId;
+        $.modal.open("修改头像", url);
+    }
+</script>
+</html>

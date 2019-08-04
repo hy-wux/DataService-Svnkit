@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('字典代码管理')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>字典码值管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <form id="query-form">
+                                    <input id="dictType" name="dictType" type="hidden" th:value="${dict.typeCode}"/>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">字典代码名称</span>
+                                            <input type="text" name="codeText" id="codeText"
+                                                   class="form-control" placeholder="字典代码名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="btn-group hidden-xs" id="toolbar" role="group">
+                                <a class="btn btn-outline btn-success btn-rounded"
+                                   shiro:hasPermission="system:dict:add" onclick="add()"><i
+                                        class="fa fa-plus"></i> 新增</a>
+                                <a class="btn btn-outline btn-danger btn-rounded"
+                                   shiro:hasPermission="system:dict:delete" onclick="$.operate.batRemove()"><i
+                                        class="fa fa-trash-o"></i> 删除</a>
+                            </div>
+                            <div class="col-sm-12 select-info table-striped">
+                                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.displayWithPermission('system:dict:edit')}]];
+    var deleteFlag = [[${@permission.displayWithPermission('system:dict:delete')}]];
+    var dicts = [[${@dictCode.selectDictCodeByType('sys_normal_disable')}]];
+    var prefix = ctx + "system/dict/code";
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add/{id}",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/delete",
+            queryParams: {dictType: $("#dictType").val()},
+            modalName: "字典代码",
+            search: false,
+            showExport: false,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'rowKey',
+                title: '主键ID',
+                sortable: true,
+                visible: false
+            }, {
+                field: 'codeValue',
+                title: '代码',
+                sortable: true
+            }, {
+                field: 'codeText',
+                title: '名称',
+                sortable: true
+            }, {
+                field: 'codeComment',
+                title: '描述',
+                sortable: true
+            }, {
+                field: 'sortNumber',
+                title: '排序',
+                sortable: true
+            }, {
+                field: 'codeStatus',
+                title: '字典状态',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictName(dicts, value);
+                }
+            }, {
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.rowKey + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + deleteFlag + '" href="#" onclick="$.operate.remove(\'' + row.rowKey + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    return actions.join('');
+                }
+            }]
+        };
+        $.table.init(options);
+    });
+
+    function add(){
+        $.operate.add($('#dictType').val());
+    }
+</script>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('字典类型修改')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-dict-edit" th:object="${dict}">
+                <input id="rowKey" name="rowKey"  type="hidden" th:field="*{rowKey}" />
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">字典类型</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="dictType" name="dictType" readonly="true" th:field="*{dictType}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">代码</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="codeValue" id="codeValue" th:field="*{codeValue}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="codeText" id="codeText" th:field="*{codeText}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">描述</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="codeComment" id="codeComment" th:field="*{codeComment}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">样式属性</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="cssStyle" name="cssStyle" th:field="*{cssStyle}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">回显样式</label>
+                    <div class="col-sm-8">
+                        <select name="listStyle" class="form-control m-b">
+                            <option value=""        th:field="*{listStyle}">---请选择---</option>
+                            <option value="default" th:field="*{listStyle}">默认</option>
+                            <option value="primary" th:field="*{listStyle}">主要</option>
+                            <option value="success" th:field="*{listStyle}">成功</option>
+                            <option value="info"    th:field="*{listStyle}">信息</option>
+                            <option value="warning" th:field="*{listStyle}">警告</option>
+                            <option value="danger"  th:field="*{listStyle}">危险</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">系统默认</label>
+                    <div class="col-sm-8" th:with="dicts=${@dictCode.selectDictCodeByType('sys_yes_no')}">
+                        <div th:each="dict : ${dicts}" th:class="${dict['cssStyle']}">
+                            <input type="radio" th:id="${dict['codeValue']}" name="isDefault" th:value="${dict['codeValue']}"
+                                     th:field="*{isDefault}">
+                            <label th:for="${dict['codeValue']}" th:text="${dict['codeText']}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">字典排序</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="number" name="sortNumber"  th:field="*{sortNumber}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">状态</label>
+                    <div class="col-sm-8" th:with="dicts=${@dictCode.selectDictCodeByType('sys_normal_disable')}">
+                        <div th:each="dict : ${dicts}" th:class="${dict['cssStyle']}">
+                            <input type="radio" th:id="${dict['codeValue']}" name="codeStatus" th:value="${dict['codeValue']}"
+                                   th:field="*{codeStatus}">
+                            <label th:for="${dict['codeValue']}" th:text="${dict['codeText']}"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">模块名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="moduleName"  th:field="*{moduleName}">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script type="text/javascript">
+    var prefix = ctx + "system/dict/code"
+
+    $("#form-dict-edit").validate({
+        rules:{
+            codeValue:{
+                required:true,
+                remote: {
+                    url: prefix + "/checkDictCodeUnique",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        rowKey: function () {
+                            return $.trim($("#rowKey").val());
+                        },
+                        codeValue: function () {
+                            return $.trim($("#codeValue").val());
+                        },
+                        dictType: function() {
+                            return $.trim($("#dictType").val());
+                        }
+                    },
+                    dataFilter: function (data, value) {
+                        return data == "0";
+                    }
+                }
+            },
+            codeText:{
+                required:true,
+            },
+            sortNumber:{
+                required:true,
+                digits:true
+            },
+        },
+        messages: {
+            "rowKey": {
+                remote: "该字典代码已经存在"
+            }
+        },
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/edit", $('#form-dict-edit').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-dict-edit').valid()) {
+            $('#form-dict-edit').submit()
+        }
+    }
+</script>
+</body>
+</html>

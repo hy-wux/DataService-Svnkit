@@ -1,0 +1,19 @@
+server:
+  port: 5550
+
+spring:
+  application:
+    name: dataservice-svnkit-eureka
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://eureka.service.hy-wux.com:5550/eureka/
+  server:
+    enable-self-preservation: true
+    renewal-percent-threshold: 0.49

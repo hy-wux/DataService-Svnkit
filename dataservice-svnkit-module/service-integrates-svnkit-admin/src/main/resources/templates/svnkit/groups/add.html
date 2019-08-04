@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('组别添加')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-group-add">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器：</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="serverKey" id="serverKey"/>
+                        <input type="text" name="serverName" id="serverName" class="form-control" placeholder="服务器" readonly="true" required="true" onclick="selectSvnkitServerList()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">组别名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="groupName" id="groupName" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">组别描述：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="groupDesc" id="groupDesc"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-svnkit.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "service/svnkit/groups"
+
+    $("#form-group-add").validate({
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/add", $('#form-group-add').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-group-add').valid()) {
+            $('#form-group-add').submit()
+        }
+    }
+</script>
+</body>
+</html>

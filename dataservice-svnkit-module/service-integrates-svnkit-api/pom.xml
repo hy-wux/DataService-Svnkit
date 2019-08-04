@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.gitee.hy-wux.service.svnkit</groupId>
+        <artifactId>DataService-Svnkit</artifactId>
+        <version>1.0.0.RELEASE</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+    <artifactId>service-integrates-svnkit-api</artifactId>
+    <name>Service Integrates Svnkit API</name>
+
+    <packaging>jar</packaging>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <inceptionYear>2019</inceptionYear>
+
+    <properties>
+        <swagger.version>2.6.1</swagger.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gitee.hy-wux.service.svnkit</groupId>
+            <artifactId>service-core</artifactId>
+        </dependency>
+
+        <!-- 引入Swagger2依赖 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.tmatesoft.svnkit</groupId>
+            <artifactId>svnkit</artifactId>
+        </dependency>
+
+    </dependencies>
+
+</project>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('邮件发送')"/>
+<link th:href="@{/libs/kindeditor/themes/default/default.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>邮件发送</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <form id="email-send-form">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">发件人</span>
+                                            <input type="hidden" name="accountKey" id="accountKey"/>
+                                            <input type="text" name="accountName" id="accountName" class="form-control" placeholder="发件人" readonly="true" required="true" onclick="selectEmailAccountList()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">收件人</span>
+                                            <input type="text" name="emailTo" id="emailTo" class="form-control" placeholder="收件人" required="true">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">主题名</span>
+                                            <input type="text" name="subject" id="subject" class="form-control" placeholder="主题名" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="submitClick()"><i
+                                                class="fa fa-paper-plane"></i>&nbsp;发送</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">内容</span>
+                                            <textarea name="emailContent" id="emailContent" style="width:700px;height:400px;visibility:hidden;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-email.js}"></script>
+<script th:src="@{/libs/kindeditor/kindeditor-min.js}"></script>
+<script th:src="@{/libs/kindeditor/lang/zh-CN.js}"></script>
+<script>
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="emailContent"]', {
+            resizeType : 1,
+            allowPreviewEmoticons : false,
+            allowImageUpload : false,
+            items : [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+    var prefix = ctx + "service/email/sender"
+
+    $("#email-send-form").validate({
+        submitHandler: function (form) {
+            $.operate.post(prefix + "/send", $('#email-send-form').serialize());
+        }
+    });
+
+    function submitClick() {
+        editor.sync();
+        if($('#email-send-form').valid()){
+            $('#email-send-form').submit()
+        }
+    }
+</script>
+</html>

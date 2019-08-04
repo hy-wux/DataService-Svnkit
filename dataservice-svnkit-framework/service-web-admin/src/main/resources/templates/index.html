@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead(${session.appname + ' - 首页'})"/>
+<link th:href="@{/css/plugins/jquery-toast-plugin/jquery.toast.min.css}" rel="stylesheet">
+<script>if (window.top !== window.self) {
+    window.top.location = window.location;
+}
+</script>
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+<div id="wrapper">
+
+    <!--左侧导航开始-->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="nav-close"><i class="fa fa-times-circle"></i></div>
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                    <span><img alt="image" class="img-circle"
+                               th:src="(${session.shiro.avatar} == null or ${session.shiro.avatar} == '') ? @{/avatar/profile.jpg} : @{/profile/avatar/} + ${session.shiro.avatar}"
+                               width="64px" height="64px"/></span>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                    <strong class="font-bold">[[${session.shiro.account}]] - [[${session.shiro.name}]]</strong>
+                            </span>
+                            <span class="text-muted text-xs block">
+                                <label th:text="${session.shiro.roleNames[0]}"></label>
+                                <b class="caret"></b>
+                            </span>
+                        </span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a class="J_menuItem" href="/upms/user/profile">个人资料</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/logout">安全退出</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="logo-element">WX</div>
+                </li>
+                <th:block th:each="menu1,listStat : ${menusList}">
+                    <li th:if="${#lists.isEmpty(menu1.children)}">
+                        <a class="J_menuItem" th:href="${menu1.url}" name="tabMenuItem">
+                            <i th:class="${'fa ' + menu1.icon}"></i>
+                            <span class="nav-label" th:text="${menu1.name}"></span>
+                        </a>
+                    </li>
+                    <li th:if="${!#lists.isEmpty(menu1.children)}">
+                        <a href="#">
+                            <i th:class="${'fa ' + menu1.icon}"></i>
+                            <span class="nav-label" th:text="${menu1.name}"></span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            <th:block th:each="menu2,listStat : ${menu1.children}">
+                                <li th:if="${#lists.isEmpty(menu2.children)}">
+                                    <a class="J_menuItem" th:href="${menu2.url}" name="tabMenuItem">
+                                        <i th:class="${'fa ' + menu2.icon}"></i>
+                                        <span class="nav-label" th:text="${menu2.name}"></span>
+                                    </a>
+                                </li>
+                                <li th:if="${!#lists.isEmpty(menu2.children)}">
+                                    <a href="#">
+                                        <i th:class="${'fa ' + menu2.icon}"></i>
+                                        <span class="nav-label" th:text="${menu2.name}"></span>
+                                        <span class="fa arrow"></span>
+                                    </a>
+                                    <ul class="nav nav-second-level">
+                                        <th:block th:each="menu3,listStat : ${menu2.children}">
+                                            <li th:if="${#lists.isEmpty(menu3.children)}">
+                                                <a class="J_menuItem" th:href="${menu3.url}" name="tabMenuItem">
+                                                    <i th:class="${'fa ' + menu3.icon}"></i>
+                                                    <span class="nav-label" th:text="${menu3.name}"></span>
+                                                </a>
+                                            </li>
+                                        </th:block>
+                                    </ul>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </nav>
+    <!--左侧导航结束-->
+
+    <!--右侧部分开始-->
+    <div id="page-wrapper" class="gray-bg dashbard-1">
+        <!-- 顶部导航 -->
+        <div class="row border-bottom">
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i
+                        class="fa fa-bars"></i></a>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                            <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                            <li>
+                                <a href="mailbox.html">
+                                    <div>
+                                        <i class="fa fa-envelope fa-fw"></i> 您有16条未读消息
+                                        <span class="pull-right text-muted small">4分钟前</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="profile.html">
+                                    <div>
+                                        <i class="fa fa-qq fa-fw"></i> 3条新回复
+                                        <span class="pull-right text-muted small">12分钟钱</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <div class="text-center link-block">
+                                    <a class="J_menuItem" href="notifications.html">
+                                        <strong>查看所有 </strong>
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="hidden-xs">
+                        <a id="fullScreen">
+                            <i class="fa fa-arrows-alt"></i> 全屏
+                        </a>
+                    </li>
+                    <li class="dropdown hidden-xs">
+                        <a class="right-sidebar-toggle" aria-expanded="false">
+                            <i class="fa fa-tasks"></i> 主题
+                        </a>
+                    </li>
+                    <li class="hidden-xs">
+                        <a href="/logout">
+                            <i class="fa fa-sign-out"></i> 退出
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- 页签列表 -->
+        <div class="row content-tabs">
+            <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
+            </button>
+            <nav class="page-tabs J_menuTabs">
+                <div class="page-tabs-content">
+                    <a href="javascript:;" class="active J_menuTab" data-id="blackboard">首页</a>
+                </div>
+            </nav>
+            <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
+            </button>
+            <div class="btn-group roll-nav roll-right">
+                <button class="dropdown J_tabClose" data-toggle="dropdown">页签</button>
+                <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                    <li class="J_tabShowActive"><a>定位当前标签页</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li class="J_tabCloseAll"><a>关闭全部标签页</a>
+                    </li>
+                    <li class="J_tabCloseOther"><a>关闭其他标签页</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 内容窗口 -->
+        <div class="row J_mainContent" id="content-main">
+            <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/main" frameborder="0"
+                    data-id="blackboard" seamless></iframe>
+        </div>
+        <!-- 底部状态 -->
+        <div class="footer">
+            <div class="pull-right" th:text="${'&copy; 2019 - ' + session.appname}"></div>
+        </div>
+    </div>
+    <!--右侧部分结束-->
+
+    <!--右侧边栏开始-->
+    <div id="right-sidebar">
+        <div class="sidebar-container">
+            <ul class="nav nav-tabs navs-3">
+                <li class="active"><a data-toggle="tab" href="#tab-1"> <i
+                        class="fa fa-gear"></i> 主题
+                </a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+                    <div class="sidebar-title">
+                        <h3>
+                            <i class="fa fa-comments-o"></i> 主题设置
+                        </h3>
+                        <small><i class="fa fa-tim"></i>
+                            你可以从这里选择和预览主题的布局和样式，这些设置会被保存在本地，下次打开的时候会直接应用这些设置。
+                        </small>
+                    </div>
+                    <div class="skin-setttings">
+                        <div class="title">主题设置</div>
+                        <div class="setings-item">
+                            <span>收起左侧菜单</span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="collapsemenu"
+                                           class="onoffswitch-checkbox" id="collapsemenu"> <label
+                                        class="onoffswitch-label" for="collapsemenu"> <span
+                                        class="onoffswitch-inner"></span> <span
+                                        class="onoffswitch-switch"></span>
+                                </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                            <span>固定顶部</span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="fixednavbar"
+                                           class="onoffswitch-checkbox" id="fixednavbar"> <label
+                                        class="onoffswitch-label" for="fixednavbar"> <span
+                                        class="onoffswitch-inner"></span> <span
+                                        class="onoffswitch-switch"></span>
+                                </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setings-item">
+                            <span> 固定宽度 </span>
+                            <div class="switch">
+                                <div class="onoffswitch">
+                                    <input type="checkbox" name="boxedlayout"
+                                           class="onoffswitch-checkbox" id="boxedlayout"> <label
+                                        class="onoffswitch-label" for="boxedlayout"> <span
+                                        class="onoffswitch-inner"></span> <span
+                                        class="onoffswitch-switch"></span>
+                                </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="title">皮肤选择</div>
+                        <div class="setings-item default-skin nb">
+						<span class="skin-name "> <a href="#" class="s-skin-0">
+								默认皮肤 </a>
+						</span>
+                        </div>
+                        <div class="setings-item blue-skin nb">
+						<span class="skin-name "> <a href="#" class="s-skin-1">
+								蓝色主题 </a>
+						</span>
+                        </div>
+                        <div class="setings-item yellow-skin nb">
+						<span class="skin-name "> <a href="#" class="s-skin-3">
+								黄色/紫色主题 </a>
+						</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--右侧边栏结束-->
+
+</div>
+
+<!-- 全局js -->
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
+<script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/js/plugins/layer/layer.min.js}"></script>
+<script th:src="@{/js/plugins/jquery-toast-plugin/jquery.toast.min.js}"></script>
+
+<!-- 自定义js -->
+<script th:src="@{/js/hplus.js}"></script>
+<script th:src="@{/js/contabs.js}"></script>
+
+<!-- 第三方插件 -->
+<script th:src="@{/js/plugins/pace/pace.min.js}"></script>
+<script th:src="@{/libs/fullscreen/jquery.fullscreen.js}"></script>
+<script th:src="@{/libs/service/js/index.js}"></script>
+<script th:src="@{/libs/sockjs/sockjs.js}"></script>
+<script th:src="@{/libs/stomp/stomp.js}"></script>
+
+<script language="javascript">
+    function connect() {
+        var socket = new SockJS("/ServiceWebSocketServer");
+        var client = Stomp.over(socket);
+        client.connect({
+            username:'[[${session.shiro.account}]]'
+        }, function (success) {
+            console.log(success);
+
+            // 订阅广播消息
+            client.subscribe("/ServiceWebSocketMessage/Broadcast", function (frame) {
+                toast(frame.body, 'info')
+            });
+
+            // 订阅点对点消息
+            client.subscribe("/ServiceWebSocketToUser/ServiceWebSocketMessage/Notice", function (frame) {
+                toast(frame.body, 'info')
+            });
+        }, function (failure) {
+            console.log(failure);
+        });
+    }
+
+    function toast(text, icon) {
+        $.toast({
+            text: text,
+            heading: '[[${session.shiro.account}]]，您有新的消息',
+            icon: icon,
+            showHideTransition: 'slide',
+            allowToastClose: true,
+            hideAfter: 3000,
+            stack: 5,
+            position: 'top-right',
+
+            bgColor: '#444444',
+            textColor: '#eeeeee',
+            textAlign: 'left',
+            loader: true,
+            loaderBg: '#006eff'
+        });
+    }
+
+    function showNotification(text, icon) {
+        if(window.Notification) {
+            var notification = new Notification('您有一条新信息', {
+                body: text,
+                icon: icon
+            });
+            setTimeout(function() { notification.close(); }, 5000);
+         } else {
+             alert('您的浏览器不支持此消息提示功能，请使用Chrome内核的浏览器！');
+         }
+     }
+
+    connect();
+</script>
+</body>
+
+</html>

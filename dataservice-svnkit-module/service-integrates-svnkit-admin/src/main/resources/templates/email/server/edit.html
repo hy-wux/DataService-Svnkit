@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('邮件服务器修改')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-server-edit" th:object="${server}">
+                <input type="hidden" name="rowKey" id="rowKey" th:field="*{rowKey}"/>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="serverName" name="serverName" required="true" th:field="*{serverName}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">邮件协议类型：</label>
+                    <div class="col-sm-8">
+                        <select id="emailProtocol" name="emailProtocol" class="form-control m-b" th:field="*{emailProtocol}"
+                                th:with="dicts=${@dictCode.selectDictCodeByType('eds_email_protocoltype')}">
+                            <option th:each="dict:${dicts}" th:text="${dict['codeText']}"
+                                    th:value="${dict['codeValue']}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器主机：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="emailHost" name="emailHost" required="true" th:field="*{emailHost}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器端口：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="number" id="emailPort" name="emailPort" required="true" th:field="*{emailPort}"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script type="text/javascript">
+    var prefix = ctx + "service/email/server"
+
+    $("#form-server-edit").validate({
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/edit", $('#form-server-edit').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-server-edit').valid()) {
+            $('#form-server-edit').submit()
+        }
+    }
+</script>
+</body>
+</html>

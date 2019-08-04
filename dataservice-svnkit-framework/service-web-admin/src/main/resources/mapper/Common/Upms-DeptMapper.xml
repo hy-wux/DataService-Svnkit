@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.visual.web.admin.modules.upms.mapper.DeptMapper">
+    <!--查询部门树-->
+    <select id="selectDeptTree" resultType="java.util.Map">
+        select t1.row_key   as "id"
+               ,t1.pid       as "pId"
+               ,t1.dept_name as "name"
+               ,t1.dept_name as "title"
+          from sys_dept t1
+         where dept_status = '01'
+    </select>
+</mapper>

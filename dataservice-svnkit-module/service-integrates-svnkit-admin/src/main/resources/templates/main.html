@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="common_include :: commonHead('SVN资源权限管理系统介绍')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3>SVN资源权限管理系统</h3>
+                </div>
+                <div class="ibox-content no-padding">
+                    <div class="panel-body">
+                        <p>SVN资源权限管理系统。一个安全、流畅、极简的远程SVN在线管理系统，解决了需要登录到远程服务器并通过命令行操作才能管理SVN服务器的烦恼，支持远程管理VisualSVN Server。
+                        </p>
+                        <p>
+                            <a class="btn btn-success btn-outline" href="https://gitee.com/hy-wux/DataService-Svnkit" target="_blank">
+                                <i class="fa fa-cloud"> </i> 访问码云
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3>技术选型</h3>
+                </div>
+                <div class="ibox-content no-padding">
+                    <div class="panel-body">
+                        <ol>
+                            <li>核心框架：Spring Boot。</li>
+                            <li>安全框架：Apache Shiro。</li>
+                            <li>模板引擎：Thymeleaf。</li>
+                            <li>持久框架：MyBatis。</li>
+                            <li>定时任务：Quartz。</li>
+                            <li>更多……</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3>更新日志</h3>
+                </div>
+                <div class="ibox-content no-padding">
+                    <div class="panel-body">
+                        <div class="panel-group" id="version">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h5 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#version" href="#v01">v2.0.0</a><code
+                                            class="pull-right">2019.06.01</code>
+                                    </h5>
+                                </div>
+                                <div id="v01" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <ol>
+                                            <li>新增功能</li>
+                                            <li>1、添加邮件服务器配置</li>
+                                            <li>2、支持管理多服务器的SVN</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#version" href="#v00">v1.0.0</a><code
+                                            class="pull-right">2019.03.01</code>
+                                    </h4>
+                                </div>
+                                <div id="v00" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <ol>
+                                            <li>SVN资源权限管理系统正式发布。</li>
+                                            <li>1、将SVN服务器的仓库、组、用户反向解析到数据库</li>
+                                            <li>2、实现仓库、组、用户的创建及批量创建</li>
+                                            <li>3、实现仓库权限管理</li>
+                                            <li>4、关键操作发送邮件通知相关人员</li>
+                                            <li>……</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

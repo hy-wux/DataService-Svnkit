@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('用户修改')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-user-edit" th:object="${user}">
+                <input type="hidden" name="rowKey" id="rowKey" th:field="*{rowKey}"/>
+                <input type="hidden" name="deptid" id="deptid" th:field="*{deptid}"/>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">部门名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="deptName"
+                               readonly="true" id="deptName" th:value="${dept.deptName}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">账号</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="userAccount" id="userAccount" readonly="true" th:field="*{userAccount}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">名称</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="userName" id="userName" th:field="*{userName}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">生日</label>
+                    <div class="col-sm-8 picker">
+                        <input class="form-control date" type="text" name="birthday" id="birthday" th:field="*{birthday}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">性别</label>
+                    <div class="col-sm-8">
+                        <select id="sex" name="sex" class="form-control m-b"
+                                th:with="dicts=${@dictCode.selectDictCodeByType('sys_user_sex')}" th:field="*{sex}">
+                            <option th:each="dict : ${dicts}" th:text="${dict['codeText']}"
+                                    th:value="${dict['codeValue']}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">电话</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="phone" id="phone" th:field="*{phone}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label ">邮箱</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="email" id="email" th:field="*{email}"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script type="text/javascript">
+    var prefix = ctx + "upms/user"
+
+    $("#form-user-edit").validate({
+        rules: {
+            userName: {
+                required: true,
+            },
+            email: {
+                required: true,
+                remote: {
+                    url: prefix + "/checkEmailUnique",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        rowKey: function () {
+                            return $.trim($("#rowKey").val());
+                        },
+                        email: function () {
+                            return $.trim($("#email").val());
+                        }
+                    },
+                    dataFilter: function (data, type) {
+                        return data == "0";
+                    }
+                }
+            },
+            phone: {
+                required: true,
+                remote: {
+                    url: prefix + "/checkPhoneUnique",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        rowKey: function () {
+                            return $.trim($("#rowKey").val());
+                        },
+                        phone: function () {
+                            return $.trim($("#phone").val());
+                        }
+                    },
+                    dataFilter: function (data, type) {
+                        return data == "0";
+                    }
+                }
+            },
+        },
+        messages: {
+            "userAccount": {
+                remote: "该用户已经存在"
+            },
+            "email": {
+                remote: "该邮箱已经存在"
+            },
+            "phone": {
+                remote: "该电话已经存在"
+            }
+        },
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/profileEdit", $('#form-user-edit').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-user-edit').valid()) {
+            $('#form-user-edit').submit()
+        }
+    }
+</script>
+</body>
+</html>

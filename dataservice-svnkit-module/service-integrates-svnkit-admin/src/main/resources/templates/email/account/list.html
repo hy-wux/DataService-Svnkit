@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('邮件账号管理')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>邮件账号管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <form id="query-form">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">邮件服务器</span>
+                                            <input type="hidden" name="serverKey" id="serverKey"/>
+                                            <input type="text" name="serverName" id="serverName" class="form-control" placeholder="邮件服务器" readonly="true" onclick="selectEmailServerList()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">账户名称</span>
+                                            <input type="text" name="accountName" id="accountName"
+                                                   class="form-control" placeholder="邮件账户名">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">邮件地址</span>
+                                            <input type="text" name="username" id="username"
+                                                   class="form-control" placeholder="邮件用户名">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="btn-group hidden-xs" id="toolbar" role="group">
+                                <a class="btn btn-outline btn-success btn-rounded"
+                                   th:if="${@permission.hasPermission('email:account:add')}"
+                                   onclick="$.operate.add(0)"><i
+                                        class="fa fa-plus"></i> 新增</a>
+                                <a class="btn btn-outline btn-danger btn-rounded"
+                                   th:if="${@permission.hasPermission('email:account:delete')}"
+                                   onclick="$.operate.batRemove()"><i
+                                        class="fa fa-trash-o"></i> 删除</a>
+                            </div>
+                            <div class="col-sm-12 select-info table-striped">
+                                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-email.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.displayWithPermission('email:account:edit')}]];
+    var listFlag = [[${@permission.displayWithPermission('email:account:list')}]];
+    var deleteFlag = [[${@permission.displayWithPermission('email:account:delete')}]];
+    var prefix = ctx + "service/email/account";
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            modifyUrl: prefix + "/edit",
+            removeUrl: prefix + "/delete",
+            modalName: "邮件账号",
+            search: false,
+            showExport: false,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'rowKey',
+                title: '主键ID',
+                sortable: true,
+                visible: false
+            }, {
+                field: 'serverName',
+                title: '邮件服务器',
+                sortable: true
+            }, {
+                field: 'accountName',
+                title: '账户名称',
+                sortable: true
+            }, {
+                field: 'username',
+                title: '邮箱地址',
+                sortable: true
+            }, {
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.rowKey + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + deleteFlag + '" href="#" onclick="$.operate.remove(\'' + row.rowKey + '\')"><i class="fa fa-remove"></i>删除</a>');
+                    return actions.join('');
+                }
+            }]
+        };
+        $.table.init(options);
+    });
+</script>
+</html>

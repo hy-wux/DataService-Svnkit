@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:include="common_include :: commonHead('SVN服务器添加')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <form class="form-horizontal m" id="form-server-add">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="serverName" name="serverName" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">微服务名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="serviceName" name="serviceName" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">服务器路径：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="serverAddress" name="serverAddress" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">管理员名称：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="adminName" name="adminName" required="true">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">管理员账号：</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="adminAccount" id="svnAccountKey"/>
+                        <input type="text" name="adminAccountDesc" id="svnAccountName" class="form-control" placeholder="管理员账号" readonly="true" onclick="selectSvnkitUserList()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">管理员邮箱：</label>
+                    <div class="col-sm-8">
+                        <input type="hidden" name="sendEmail" id="accountKey"/>
+                        <input type="text" name="sendEmailDesc" id="accountName" class="form-control" placeholder="管理员邮箱" readonly="true" onclick="selectEmailAccountList()">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-email.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "service/svnkit/servers"
+
+    $("#form-server-add").validate({
+        submitHandler: function (form) {
+            $.operate.save(prefix + "/add", $('#form-server-add').serialize());
+        }
+    });
+
+    function submitClick() {
+        if ($('#form-server-add').valid()) {
+            $('#form-server-add').submit()
+        }
+    }
+</script>
+</body>
+</html>

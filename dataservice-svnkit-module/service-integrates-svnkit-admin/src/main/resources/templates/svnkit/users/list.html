@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('用户管理')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>用户管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <form id="query-form">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">服务器</span>
+                                            <input type="hidden" name="serverKey" id="serverKey"/>
+                                            <input type="text" name="serverName" id="serverName" class="form-control" placeholder="服务器" readonly="true" onclick="selectSvnkitServerList()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">用户名称</span>
+                                            <input type="text" name="username" id="username"
+                                                   class="form-control" placeholder="用户名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">员工名称</span>
+                                            <input type="text" name="staffName" id="staffName"
+                                                   class="form-control" placeholder="员工名称">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">员工工号</span>
+                                            <input type="text" name="staffNum" id="staffNum"
+                                                   class="form-control" placeholder="员工工号">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">员工邮箱</span>
+                                            <input type="text" name="staffEmail" id="staffEmail"
+                                                   class="form-control" placeholder="员工邮箱">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="btn-group hidden-xs" id="toolbar" role="group">
+                                <a class="btn btn-outline btn-primary btn-rounded"
+                                   th:if="${@permission.hasPermission('svnkit:users:init')}"
+                                   onclick="$.operate.post(ctx + 'service/svnkit/users/init',{serverKey:$('#serverKey').val()})"><i
+                                        class="fa fa-inbox"></i> 反析</a>
+                                <a class="btn btn-outline btn-warning btn-rounded"
+                                   th:if="${@permission.hasPermission('svnkit:users:import')}"
+                                   onclick="importPrepare()"><i
+                                        class="fa fa-file-o"></i> 导入</a>
+                                <a class="btn btn-outline btn-success btn-rounded"
+                                   th:if="${@permission.hasPermission('svnkit:users:add')}"
+                                   onclick="$.operate.add(0)"><i
+                                        class="fa fa-plus"></i> 新增</a>
+                                <a class="btn btn-outline btn-info btn-rounded"
+                                   th:if="${@permission.hasPermission('svnkit:users:export')}"
+                                   onclick="$.table.exportExcel()"><i
+                                        class="fa fa-file-excel-o"></i> 导出</a>
+                            </div>
+                            <div class="col-sm-12 select-info table-striped">
+                                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form th:include="common_include :: importForm" id="importForm" enctype="multipart/form-data" class="form-horizontal m" style="display: none;"/>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/service/js/service-svnkit.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.displayWithPermission('svnkit:users:edit')}]];
+    var viewFlag = [[${@permission.displayWithPermission('svnkit:users:view')}]];
+    var prefix = ctx + "service/svnkit/users";
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            viewUrl: prefix + "/view/{id}",
+            exportUrl: prefix + "/export",
+            importTemplateUrl: prefix + "/importTemplate",
+            importUrl: prefix + "/import/{formParam}",
+            modalName: "用户",
+            search: false,
+            showExport: false,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'rowKey',
+                title: '主键ID',
+                sortable: true,
+                visible: false
+            }, {
+                field: 'username',
+                title: '用户名称',
+                sortable: true
+            }, {
+                field: 'staffName',
+                title: '员工名称',
+                sortable: true
+            }, {
+                field: 'staffNum',
+                title: '员工工号',
+                sortable: true
+            }, {
+                field: 'staffEmail',
+                title: '员工邮箱',
+                sortable: true
+            }, {
+                field: 'loginAccount',
+                title: '登录账号',
+                sortable: true
+            }, {
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.rowKey + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-primary btn-xs ' + viewFlag + '" href="#" onclick="$.operate.view(\'' + row.rowKey + '\')"><i class="fa fa-eye"></i>查看</a> ');
+                    return actions.join('');
+                }
+            }]
+        };
+        $.table.init(options);
+    });
+
+    function importPrepare() {
+        if($("#serverKey").val() == "") {
+            $.modal.alertError("请指定服务器");
+        } else {
+            $.table.importExcel('importForm',$('#serverKey').val())
+        }
+    }
+</script>
+</html>

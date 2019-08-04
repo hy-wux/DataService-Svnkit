@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('SVN服务器管理')"/>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>SVN服务器管理</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <form id="query-form">
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">服务器名称</span>
+                                            <input type="text" name="serverName" id="serverName"
+                                                   class="form-control" placeholder="服务器名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">微服务名称</span>
+                                            <input type="text" name="serviceName" id="serviceName"
+                                                   class="form-control" placeholder="微服务名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-sm-12 select-info table-striped">
+                                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:inline="javascript">
+    var prefix = ctx + "service/svnkit/servers";
+    $(function () {
+        var options = {
+            url: prefix + "/list",
+            modalName: "SVN服务器",
+            search: false,
+            showExport: false,
+            columns: [{
+                radio: true
+            }, {
+                field: 'rowKey',
+                title: '主键ID',
+                sortable: true,
+                visible: false
+            }, {
+                field: 'serverName',
+                title: '服务器名称',
+                sortable: true
+            }, {
+                field: 'serviceName',
+                title: '微服务名称',
+                sortable: true
+            }, {
+                field: 'serverAddress',
+                title: '服务器路径',
+                sortable: true
+            }, {
+                field: 'adminName',
+                title: '管理员名称',
+                sortable: true
+            }, {
+                field: 'adminAccountDesc',
+                title: '管理员账号',
+                sortable: true
+            }, {
+                field: 'sendEmailDesc',
+                title: '管理员邮箱',
+                sortable: true
+            }]
+        };
+        $.table.init(options);
+    });
+
+    function submitClick() {
+        var serverKey = $.map($('#bootstrap-table').bootstrapTable('getSelections'), function (row) {
+            return row[$.table._option.columns[1].field];
+        });
+        var serverName = $.map($('#bootstrap-table').bootstrapTable('getSelections'), function (row) {
+            return row[$.table._option.columns[2].field];
+        });
+
+        parent.$("#serverKey").val(serverKey);
+        parent.$("#serverName").val(serverName);
+
+        var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+        parent.layer.close(index);
+    }
+</script>
+</html>

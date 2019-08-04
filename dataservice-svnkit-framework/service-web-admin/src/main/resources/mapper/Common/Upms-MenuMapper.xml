@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.service.visual.web.admin.modules.upms.mapper.MenuMapper">
+
+    <!-- 登录时根据角色获取菜单 -->
+    <select id="queryMenusByLoginRoles" resultType="com.service.visual.web.admin.entity.MenuNode">
+        select row_key     as id
+               ,pid         as pid
+               ,menu_name   as name
+               ,sort_number as sortNumber
+               ,levels      as levels
+               ,url         as url
+               ,icon        as icon
+          from sys_menu
+         where row_key in (select menuid from sys_relation rela where rela.roleid in
+                            <foreach collection="list" index="index" item="i" open="(" separator="," close=")">
+                                #{i}
+                            </foreach>
+                            )
+           and menu_type in ('M','F')
+           and menu_status = '01'
+         order by levels,sort_number asc
+    </select>
+</mapper>

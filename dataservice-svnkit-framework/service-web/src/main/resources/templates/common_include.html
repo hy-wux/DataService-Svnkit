@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="commonHead(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+
+    <title th:text="${title}"></title>
+
+    <link th:href="@{/favicon.ico}" rel="shortcut icon">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet">
+    <link th:href="@{/css/animate.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/checkbox.css}" rel="stylesheet">
+
+    <link th:href="@{/libs/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet">
+    <link th:href="@{/libs/bootstrap-treetable/bootstrap-treetable.css}" rel="stylesheet">
+    <link th:href="@{/libs/bootstrap-editable/bootstrap-editable.css}" rel="stylesheet">
+
+    <link th:href="@{/libs/select/select2.css}" rel="stylesheet">
+    <link th:href="@{/libs/iCheck/custom.css}" rel="stylesheet"/>
+    <link th:href="@{/libs/datapicker/datepicker3.css}" rel="stylesheet"/>
+
+    <link th:href="@{/libs/service/css/service.css}" rel="stylesheet">
+    <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+</head>
+
+<head th:fragment="commonFoot">
+    <!-- 全局js -->
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+
+    <!-- bootstrap-table 插件 -->
+    <script th:src="@{/libs/bootstrap-table/bootstrap-table.min.js}"></script>
+    <script th:src="@{/libs/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"></script>
+    <!-- bootstrap-treetable 插件 -->
+    <script th:src="@{/libs/bootstrap-treetable/bootstrap-treetable.js}"></script>
+    <!-- bootstrap-editable 插件 -->
+    <script th:src="@{/libs/bootstrap-editable/bootstrap-editable.js}"></script>
+
+    <script th:src="@{/libs/bootstrap-table/extensions/editable/bootstrap-table-editable.js}"></script>
+    <script th:src="@{/libs/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
+    <script th:src="@{/libs/bootstrap-table/extensions/export/tableExport.js}"></script>
+    <script th:src="@{/libs/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js}"></script>
+    <script th:src="@{/libs/bootstrap-table/extensions/toolbar/bootstrap-table-toolbar.min.js}"></script>
+
+    <!-- jquery-validate 插件 -->
+    <script th:src="@{/libs/validate/jquery.validate.min.js}"></script>
+    <script th:src="@{/libs/validate/messages_zh.min.js}"></script>
+    <script th:src="@{/libs/validate/jquery.validate.extend.js}"></script>
+
+    <!-- 遮罩层 -->
+    <script th:src="@{/libs/blockUI/jquery.blockUI.js}"></script>
+    <script th:src="@{/libs/layer/layer.min.js}"></script>
+    <script th:src="@{/libs/layui/layui.js}"></script>
+
+    <script th:src="@{/libs/select/select2.js}"></script>
+    <script th:src="@{/libs/iCheck/icheck.min.js}"></script>
+    <script th:src="@{/libs/datapicker/bootstrap-datepicker.js}"></script>
+
+    <script th:src="@{/libs/service/js/service.js}"></script>
+    <script th:src="@{/libs/service/js/common.js}"></script>
+
+    <script th:src="@{/libs/sockjs/sockjs.js}"></script>
+    <script th:src="@{/libs/stomp/stomp.js}"></script>
+</head>
+
+<form th:fragment="importForm">
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="file" id="file" name="file"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <input type="checkbox" id="updateSupport" name="updateSupport" title="如果数据已经存在，更新这条数据。"> 是否更新已经存在的数据
+            &nbsp; <a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i
+                class="fa fa-file-excel-o"></i> 下载模板</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <font color="red">
+                提示：仅允许导入“xls”或“xlsx”格式文件！
+            </font>
+        </div>
+    </div>
+</form>
+
+</html>

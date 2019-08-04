@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" lang="zh" class="no-js">
+<head th:include="common_include :: commonHead('仓库权限')"/>
+<link th:href="@{/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 仓库条目
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开"><i
+                            class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠" style="display:none;"><i
+                            class="fa fa-chevron-up"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui-layout-center wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>仓库权限</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row row-lg">
+                        <div class="col-sm-12">
+                            <div class="row">
+                                <form id="query-form">
+                                    <input type="hidden" name="serverKey" id="serverKey"
+                                           th:value="${repository.serverKey}"/>
+                                    <input type="hidden" name="repositoryName" id="repositoryName"
+                                           th:value="${repository.repositoryName}"/>
+                                    <input type="hidden" name="repositoryPath" id="repositoryPath"
+                                           th:value="${repository.repositoryName}"/>
+                                    <div class="col-sm-5">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon">查询条件</span>
+                                            <input type="text" name="queryName" id="queryName"
+                                                   class="form-control" placeholder="查询条件">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                                class="fa fa-search"></i>&nbsp;搜索</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="btn-group hidden-xs" id="toolbar" user="group">
+                                <a class="btn btn-outline btn-success btn-rounded"
+                                   shiro:hasPermission="svnkit:repositories:right" onclick="insert()"><i
+                                        class="fa fa-plus"></i> 新增</a>
+                            </div>
+                            <div class="col-sm-12 select-info table-striped">
+                                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<div th:include="common_include :: commonFoot"/>
+<script th:src="@{/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var objects = [[${@dictCode.selectDictCodeByType('svnkit_object_type')}]];
+    var rights = [[${@dictCode.selectDictCodeByType('svnkit_right_type')}]];
+    var grants = [[${@dictCode.selectDictCodeByType('svnkit_grant_type')}]];
+    var rightFlag = [[${@permission.displayWithPermission('svnkit:repositories:right')}]];
+    var prefix = ctx + "service/svnkit/repositories";
+
+    function insert() {
+        $.modal.open("添加权限", prefix + "/insertRight?serverKey=" + [[${repository.serverKey}]] + "&repositoryName=" + [[${repository.repositoryName}]] + "&repositoryPath=" + $("#repositoryPath").val());
+    }
+
+    function update(name,type) {
+        $.modal.open("修改权限", prefix + "/updateRight?serverKey=" + [[${repository.serverKey}]] + "&repositoryName=" + [[${repository.repositoryName}]] + "&repositoryPath=" + $("#repositoryPath").val() + "&objectName=" + name + "&types=" + type);
+    }
+
+    function remove(name,type) {
+        $.modal.confirm("确定删除该条权限信息吗？", function () {
+            var url = prefix + "/deleteRight?serverKey=" + [[${repository.serverKey}]] + "&repositoryName=" + [[${repository.repositoryName}]] + "&repositoryPath=" + $("#repositoryPath").val() + "&objectName=" + name + "&types=" + type;
+            var data = {};
+            $.operate.submit(url, "post", "json", data);
+        });
+    }
+
+    $(function () {
+        $('body').layout({west__size: 250});
+
+        // 树结构初始化加载
+        var setting = {
+            view: {showLine: true, selectedMulti: false, nameIsHTML: true},
+            data: {key: {name: "name"}, simpleData: {enable: true, idKey: "id", pIdKey: "pid", rootPId: ""}},
+            async: {
+                enable: true,
+                url:prefix + "/listChildrenView",
+                autoParam:["id"],
+                otherParam:{"serverKey": [[${repository.serverKey}]], "repositoryName": [[${repository.repositoryName}]]}
+            },
+            callback: {
+                onClick: function (event, treeId, treeNode) {
+                    $("#repositoryPath").val(treeNode.id);
+                    $.table.search();
+                }
+            }
+        };
+
+        var tree = $.fn.zTree.init($("#tree"), setting);
+
+        $('#btnExpand').click(function() {
+            tree.expandAll(true);
+            $(this).hide();
+            $('#btnCollapse').show();
+        });
+        $('#btnCollapse').click(function() {
+            tree.expandAll(false);
+            $(this).hide();
+            $('#btnExpand').show();
+        });
+
+        var options = {
+            url: prefix + "/listRights",
+            search: false,
+            showExport: false,
+            columns: [{
+                field: 'name',
+                title: '名称'
+            }, {
+                field: 'type',
+                title: '对象类型',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictName(objects, value);
+                }
+            }, {
+                field: 'objectName',
+                title: '对象名称'
+            }, {
+                field: 'staffNum',
+                title: '员工编号'
+            }, {
+                field: 'staffEmail',
+                title: '员工邮箱'
+            }, {
+                field: 'right',
+                title: '对象权限',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictName(rights, value);
+                }
+            }, {
+                field: 'grant',
+                title: '授权类型',
+                formatter: function (value, row, index) {
+                    return $.table.selectDictName(grants, value);
+                }
+            }, {
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + rightFlag + '" href="#" onclick="update(\'' + row.name + '\',\'' + row.type + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + row.delete + '" href="#" onclick="remove(\'' + row.name + '\',\'' + row.type + '\')"><i class="fa fa-remove"></i>删除</a> ');
+                    return actions.join('');
+                }
+            }]
+        };
+
+        $.table.init(options);
+    });
+</script>
+</html>

@@ -1,4 +1,4 @@
-package com.service.integrates.svnkit.provider.service.subversion
+package com.service.integrates.svnkit.provider.service.subversionhttp
 
 import java.io.File
 import java.util
@@ -14,7 +14,7 @@ import org.tmatesoft.svn.core.{SVNException, SVNURL}
 import scala.collection.JavaConversions._
 
 @Service
-@ConditionalOnProperty(value = Array("service.svnkit.version"), havingValue = "subversion")
+@ConditionalOnProperty(value = Array("service.svnkit.version"), havingValue = "subversionhttp")
 class SvnkitRepositoryLocalServiceImpl extends SvnkitRepositoryOperationService {
 
   @Autowired

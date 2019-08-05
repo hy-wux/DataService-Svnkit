@@ -46,11 +46,13 @@ DataDataService-Svnkit
 * 能够为仓库设置组和用户、能够为组设置用户，并且通过Email的方式通知相关人员
 * 能够修改SVN用户的密码，并且通过Email的方式通知相关人员
 * 能够通过Excel导入的方式，批量创建仓库、用户；能够将仓库、用户的信息导出到Excel
+* 可管理基于Windows的VisualSVN；可以管理基于Linux的Subversion，同时实现了基于svn://协议的管理，以及整合Apache后基于http://协议的管理
 
 ## 软件文档
 
 * [VisualSVN管理文档](docs/管理文档VisualSVN/VisualSVN管理文档.md)
 * [Subversion管理文档](docs/管理文档Subversion/Subversion管理文档.md)
+* [Subversion整合Apache管理文档](docs/管理文档Subversion整合Apache/Subversion整合Apache管理文档.md)
 * [软件部署及运行效果](docs/软件部署运行/软件部署及运行效果.md)
 * [软件操作手册](docs/软件操作手册/软件操作手册.md)
 

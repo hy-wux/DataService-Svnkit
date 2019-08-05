@@ -41,3 +41,10 @@ build/*.jar
 
 # Redis
 dump.rdb
+
+*.rar
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z

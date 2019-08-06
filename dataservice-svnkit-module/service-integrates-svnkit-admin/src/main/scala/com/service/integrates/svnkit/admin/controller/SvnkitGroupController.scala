@@ -170,10 +170,17 @@ class SvnkitGroupController extends BaseController with ServiceEasypoiTrait with
   def addSave(record: SvnkitGroup): AjaxResult = {
     executeRequest responseAjax {
       val server = svnkitServerService.selectById(record.serverKey)
-      // 创建组别
-      svnkitRemoteService.createGroup(server.serviceName, record.groupName)
-      // 插入组别
-      groupService.insert(record)
+      // 获取已存在的组别
+      val groupExists = svnkitRemoteService.listGroups(server.serviceName)
+      // 判断组别是否存在
+      if (groupExists.contains(record.groupName)) {
+        throw new Exception("组别已存在")
+      } else {
+        // 创建组别
+        svnkitRemoteService.createGroup(server.serviceName, record.groupName)
+        // 插入组别
+        groupService.insert(record)
+      }
     }
   }
 

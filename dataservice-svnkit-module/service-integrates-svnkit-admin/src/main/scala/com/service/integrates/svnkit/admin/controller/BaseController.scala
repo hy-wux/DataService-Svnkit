@@ -7,7 +7,7 @@ import com.service.framework.core.serializer.ServiceSerializer
 import com.service.framework.web.page.PageDomain
 import com.service.integrates.email.component.ServiceEmailComponent
 import com.service.integrates.email.service.{IEmailAccountService, IEmailServerService}
-import com.service.integrates.svnkit.admin.service.{ISvnkitGroupService, ISvnkitRepositoryService, ISvnkitServerService, ISvnkitUserService, OnlineUserSession}
+import com.service.integrates.svnkit.admin.service._
 import com.service.integrates.svnkit.api.remote.SvnkitRemoteService
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier}
 import org.springframework.context.annotation.Lazy

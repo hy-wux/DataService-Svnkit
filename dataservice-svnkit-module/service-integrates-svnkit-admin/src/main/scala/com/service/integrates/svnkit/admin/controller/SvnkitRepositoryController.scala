@@ -1,15 +1,11 @@
 package com.service.integrates.svnkit.admin.controller
 
-import java.io.{File, FileOutputStream}
 import java.util
 
-import cn.afterturn.easypoi.excel.entity.{ExportParams, ImportParams}
-import cn.afterturn.easypoi.excel.{ExcelExportUtil, ExcelImportUtil}
-import com.baomidou.mybatisplus.mapper.{EntityWrapper, Wrapper}
+import com.baomidou.mybatisplus.mapper.EntityWrapper
 import com.service.framework.core.utils.{CommUtil, DateUtil, EncryptUtil}
 import com.service.framework.web.controller.{AjaxResult, ControllerInitBinder}
 import com.service.framework.web.page.PageDomain
-import com.service.framework.web.utils.FileUploadUtils
 import com.service.integrates.easypoi.traits.ServiceEasypoiTrait
 import com.service.integrates.email.entity.EmailAccount
 import com.service.integrates.svnkit.admin.entity.{SvnkitGroup, SvnkitRepository, SvnkitServer, SvnkitUser}
@@ -24,7 +20,6 @@ import org.thymeleaf.context.Context
 import org.tmatesoft.svn.core.SVNNodeKind
 
 import scala.collection.JavaConversions._
-import scala.collection.JavaConverters._
 
 @Controller
 @RequestMapping(Array("/service/svnkit/repositories"))
@@ -204,30 +199,37 @@ class SvnkitRepositoryController extends BaseController with ServiceEasypoiTrait
   def addSave(record: SvnkitRepository): AjaxResult = {
     executeRequest responseAjax {
       val server = svnkitServerService.selectById(record.serverKey)
-      val emailAccount = emailAccountService.selectById(server.sendEmail)
+      // 获取已存在的仓库
+      val repositoryExists = svnkitRemoteService.listRepositories(server.serviceName)
+      // 判断仓库是否存在
+      if (repositoryExists.contains(record.repositoryName)) {
+        throw new Exception("仓库已存在")
+      } else {
+        val emailAccount = emailAccountService.selectById(server.sendEmail)
 
-      val user = userService.selectOne(new EntityWrapper[SvnkitUser]().eq("server_key", record.serverKey).eq("login_account", onlineUserSession.getOnlineUserAccount))
-      if (CommUtil.isEmpty(user)) throw new Exception("您还没有关联SVN用户")
-      user.password = EncryptUtil.decrypt3DES(user.password)
+        val user = userService.selectOne(new EntityWrapper[SvnkitUser]().eq("server_key", record.serverKey).eq("login_account", onlineUserSession.getOnlineUserAccount))
+        if (CommUtil.isEmpty(user)) throw new Exception("您还没有关联SVN用户")
+        user.password = EncryptUtil.decrypt3DES(user.password)
 
-      // 1、通过本地服务创建仓库
-      // 创建本地SVN仓库
-      val right = new util.HashMap[String, String]()
-      right.put(user.username, "rw")
-      svnkitRemoteService.createLocalRepository(server.serviceName, record.repositoryName, true, false, right)
+        // 1、通过本地服务创建仓库
+        // 创建本地SVN仓库
+        val right = new util.HashMap[String, String]()
+        right.put(user.username, "rw")
+        svnkitRemoteService.createLocalRepository(server.serviceName, record.repositoryName, true, false, right)
 
-      // 2、通过远程服务创建目录
-      if (record.repositoryType.equalsIgnoreCase("single")) {
-        val url = s"${server.serverAddress}${if (server.serverAddress.endsWith("/")) "" else "/"}${record.repositoryName}"
-        repositoryRemoteService.createSubDirectory(user.username, user.password, url, List("branches", "tags", "trunk"))
-      }
+        // 2、通过远程服务创建目录
+        if (record.repositoryType.equalsIgnoreCase("single")) {
+          val url = s"${server.serverAddress}${if (server.serverAddress.endsWith("/")) "" else "/"}${record.repositoryName}"
+          repositoryRemoteService.createSubDirectory(user.username, user.password, url, List("branches", "tags", "trunk"))
+        }
 
-      // 3、保存到数据库
-      repositoryService.insert(record)
+        // 3、保存到数据库
+        repositoryService.insert(record)
 
-      // 4、发送邮件
-      if (CommUtil.isNotEmpty(record.contactsEmail) && CommUtil.isNotEmpty(emailAccount)) {
-        sendRepositoryCreateEmail(server, emailAccount, record)
+        // 4、发送邮件
+        if (CommUtil.isNotEmpty(record.contactsEmail) && CommUtil.isNotEmpty(emailAccount)) {
+          sendRepositoryCreateEmail(server, emailAccount, record)
+        }
       }
     }
   }

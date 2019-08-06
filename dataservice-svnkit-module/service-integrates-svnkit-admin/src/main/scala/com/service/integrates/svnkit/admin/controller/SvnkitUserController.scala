@@ -189,23 +189,28 @@ class SvnkitUserController extends BaseController with ServiceEasypoiTrait with 
   @ResponseBody
   def addSave(record: SvnkitUser): AjaxResult = {
     executeRequest responseAjax {
-      // 设置SVN用户密码
-      record.password = MD5.getMD5(record.username).toUpperCase
-
       val server = svnkitServerService.selectById(record.serverKey)
-      val emailAccount = emailAccountService.selectById(server.sendEmail)
+      // 获取已存在的用户
+      val userExists = svnkitRemoteService.listUsers(server.serviceName)
+      // 判断用户是否存在
+      if (userExists.contains(record.username)) {
+        throw new Exception("用户已存在")
+      } else {
+        // 设置SVN用户密码
+        record.password = MD5.getMD5(record.username).toUpperCase
+        val emailAccount = emailAccountService.selectById(server.sendEmail)
+        // 创建用户
+        svnkitRemoteService.createUser(server.serviceName, record.username, record.password)
 
-      // 创建用户
-      svnkitRemoteService.createUser(server.serviceName, record.username, record.password)
+        // 保存到数据库
+        record.password = EncryptUtil.encrypt3DES(record.password)
+        userService.insert(record)
 
-      // 保存到数据库
-      record.password = EncryptUtil.encrypt3DES(record.password)
-      userService.insert(record)
-
-      if (CommUtil.isNotEmpty(record.staffEmail) && CommUtil.isNotEmpty(emailAccount)) {
-        // 发送邮件
-        record.password = EncryptUtil.decrypt3DES(record.password)
-        sendUserCreateEmail(server, emailAccount, record)
+        if (CommUtil.isNotEmpty(record.staffEmail) && CommUtil.isNotEmpty(emailAccount)) {
+          // 发送邮件
+          record.password = EncryptUtil.decrypt3DES(record.password)
+          sendUserCreateEmail(server, emailAccount, record)
+        }
       }
     }
   }

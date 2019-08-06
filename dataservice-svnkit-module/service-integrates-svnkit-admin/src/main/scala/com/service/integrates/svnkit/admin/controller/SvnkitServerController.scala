@@ -6,8 +6,7 @@ import com.service.framework.core.utils.CommUtil
 import com.service.framework.web.controller.AjaxResult
 import com.service.framework.web.page.PageDomain
 import com.service.integrates.easypoi.traits.ServiceEasypoiTrait
-import com.service.integrates.email.entity.EmailAccount
-import com.service.integrates.svnkit.admin.entity.{SvnkitServer, SvnkitUser}
+import com.service.integrates.svnkit.admin.entity.SvnkitServer
 import org.apache.shiro.authz.annotation.RequiresPermissions
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap

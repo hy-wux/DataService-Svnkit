@@ -25,7 +25,7 @@
         <scala.version>2.11.8</scala.version>
         <scalatest.version>3.0.5</scalatest.version>
         <jasypt.version>1.18</jasypt.version>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.6.0</shiro.version>
         <swagger.version>2.6.1</swagger.version>
         <poi.version>3.16</poi.version>
 

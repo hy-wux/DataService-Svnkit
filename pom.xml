@@ -27,7 +27,7 @@
         <jasypt.version>1.18</jasypt.version>
         <shiro.version>1.4.0</shiro.version>
         <swagger.version>2.6.1</swagger.version>
-        <poi.version>3.16</poi.version>
+        <poi.version>4.1.1</poi.version>
 
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
         <motan.version>1.1.3</motan.version>
